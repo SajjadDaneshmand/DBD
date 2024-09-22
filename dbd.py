@@ -1,4 +1,5 @@
 # standard
+import os
 import sys
 from collections import OrderedDict
 # internal
@@ -28,6 +29,9 @@ class Runner(object):
         # if current widget has parent add back option
         if self._current_widget.parent:
             self._menu['b'] = 'Back'
+
+        # add clear page into menu
+        self._menu['c'] = 'Clear'
         # finally add exit into menu
         self._menu['x'] = 'Exit'
         items = ['({}) {}'.format(key, value) for key, value in self._menu.items()]
@@ -36,14 +40,18 @@ class Runner(object):
     def dispatch(self):
         # get answer
         while True:
-            answer = input(': ')
+            answer = input('>>> ')
             if answer in self._menu:
                 break
+            elif answer.strip() == '':
+                continue
             console.error('EEK')
         # dispatch
         if answer == 'x':
             console.print('Goodbye')
             sys.exit(0)
+        elif answer == 'c':
+            os.system('cls')
         elif answer == 'b':
             self._current_widget = self._current_widget.parent
         else:
