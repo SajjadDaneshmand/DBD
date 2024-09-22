@@ -3,6 +3,7 @@ import os
 import sys
 from collections import OrderedDict
 # internal
+from src import functions
 from src import widgets
 from src import console
 
@@ -51,7 +52,7 @@ class Runner(object):
             console.print('Goodbye')
             sys.exit(0)
         elif answer == 'c':
-            os.system('cls')
+            functions.clear_console()
         elif answer == 'b':
             self._current_widget = self._current_widget.parent
         else:

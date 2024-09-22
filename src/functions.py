@@ -1,5 +1,6 @@
 # standard
 import os
+import sys
 # internal
 from src import mem
 from src import console
@@ -30,3 +31,10 @@ def load_snaps():
         if content.startswith('Snap__'):
             snaps.append(Snap.from_pickle(os.path.join(settings.SNAP_DIR, content)))
     return snaps
+
+
+def clear_console():
+    if 'win' in sys.platform.lower():
+        os.system('cls')
+        return
+    os.system('clear')
