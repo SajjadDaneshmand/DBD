@@ -1,0 +1,5 @@
+{
+  "databases": [
+    {"dbms":  "mssql", "database": "<DATABASE_NAME>", "server": "<SERVER_ADDRESS>", "username": "<USERNAME>", "password": "<PASSWORD>"}
+  ]
+}
