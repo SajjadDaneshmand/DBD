@@ -1,4 +1,7 @@
 # internal
+import os
+import shutil
+
 import pandas
 from src import mem
 from src import console
@@ -140,6 +143,35 @@ class Compare(BaseWidget):
             console.print('No changes detected')
         else:
             console.render_compare(new, deleted, changed[0])
+
+
+class DeleteSnaps(BaseWidget):
+    """Delete All snap in a snaps folder"""
+    CODE = 11
+    NAME = 'Delete Snaps'
+    PARENT = Snaps.CODE
+
+    def do(self):
+        user_input = input('Are sure you want to delete all snaps? ([y], n) ').strip().lower()
+
+        if user_input == '' or user_input == 'y':
+            try:
+                self.delete_snaps(settings.SNAP_DIR)
+            except Exception as e:
+                console.error(f'Error: {e}')
+            else:
+                console.success('Deleted all snaps')
+                mem.set('snaps', None)
+        else:
+            console.error('Operation canceled')
+
+    @staticmethod
+    def delete_snaps(directory):
+        # get listdir from snap folder
+        folder_items = os.listdir(directory)
+        for item in folder_items:
+            if os.path.isdir(item):
+                shutil.rmtree(os.path.join(directory, item))
 
 
 class Columns(BaseWidget):
