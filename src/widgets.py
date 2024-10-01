@@ -161,7 +161,7 @@ class DeleteSnaps(BaseWidget):
                 console.error(f'Error: {e}')
             else:
                 console.success('Deleted all snaps')
-                mem.set('snaps', None)
+                mem.delete('snaps')
         else:
             console.error('Operation canceled')
 
@@ -170,8 +170,9 @@ class DeleteSnaps(BaseWidget):
         # get listdir from snap folder
         folder_items = os.listdir(directory)
         for item in folder_items:
-            if os.path.isdir(item):
-                shutil.rmtree(os.path.join(directory, item))
+            full_path = os.path.join(directory, item)
+            if os.path.isdir(full_path):
+                shutil.rmtree(full_path)
 
 
 class Columns(BaseWidget):
@@ -198,6 +199,7 @@ class Records(BaseWidget):
         records = self.parent.current_database.records(table)
         console.render_records(columns, records)
 
+
 class ChangedTables(BaseWidget):
     """Changed Columns in a Table"""
     CODE = 9
@@ -212,8 +214,7 @@ class ChangedTables(BaseWidget):
 
         mem.set('selected_tbl', selected_tbl)
         mem.set('selected_clmn', a)
-        
-        
+
 
 class ChangedColumns(BaseWidget):
     """Detailed changes in Columns"""
@@ -221,33 +222,33 @@ class ChangedColumns(BaseWidget):
     NAME = "View Changes in a Column"
     PARENT = ChangedTables.CODE
 
-    def do (self):
+    def do(self):
         df = pandas.DataFrame()
 
-        #dataframe containing all changes
+        # dataframe containing all changes
         changed_row = mem.get('all_changes')
 
         selected_table = mem.get('selected_tbl')
         selected_column = mem.get('selected_clmn')
 
-        #obtaining cropped dataframe of changes for selected table
+        # obtaining cropped dataframe of changes for selected table
         for j in (i for i in changed_row if selected_table in list(i.keys())):
             df = j.get(selected_table)
 
-        #user selection
+        # user selection
         selection = int(input('Column: '))
 
-        #obtaining a cropped dataframe for the selected column
+        # obtaining a cropped dataframe for the selected column
         for j in (i for i in selected_column if selection in i.keys()):
             value = j.get(selection)
 
-
-        #replacing null values (values that haven't been changed or have benn deleted)       
-        user_selection = df.loc[:,value ].fillna(">>??<<")
+        # replacing null values (values that haven't been changed or have benn deleted)
+        user_selection = df.loc[:,value].fillna(">>??<<")
         
         console.render_changedTable(value, user_selection)
 
         df.iloc[0:0]
+
 
 # initialize widgets and set relations
 WIDGETS = {
