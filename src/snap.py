@@ -13,7 +13,7 @@ class Snap(object):
     CREATED_AT_FORMAT = '%Y-%m-%d %H-%M-%S'
 
     def __init__(self, database_name, data_frames, created_at=None):
-        self.database_name = database_name.replace("./","")
+        self.database_name = database_name.replace("./", "")
         self.data_frames = data_frames
         self.created_at = created_at or datetime.now().strftime(self.CREATED_AT_FORMAT)
 
@@ -68,24 +68,23 @@ class Snap(object):
     def changed(self, other):
         """common frames that changed"""
 
-        #saving changed column titles
+        # saving changed column titles
         table_changed = {}
 
-        #saving details of the changes in each column
+        # saving details of the changes in each column
         all_changes = []
 
         for frame in self.common(other):
             left, right = self.data_frames[frame].align(other.data_frames[frame], join='outer')
             r = left.compare(right)
-            
-            if not r.empty:
-                all_changes.append({frame:r})
 
-                #using sets to omit redundancy
-                table_changed[frame]=set()
-                
+            if not r.empty:
+                all_changes.append({frame: r})
+
+                # using sets to omit redundancy
+                table_changed[frame] = set()
+
                 for c, i in r.items():
                     table_changed.get(frame).add(c[0])
-        
 
-        return [table_changed,all_changes]
+        return [table_changed, all_changes]
